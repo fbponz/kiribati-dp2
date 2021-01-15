@@ -21,6 +21,15 @@ TBD
 
 ## 2.1) Arquitectura 
 
+1. Nifi -> http://localhost:8090
+
+la configuración de la red está habilitada con el driver "bridge".
+Para ejecutar el sistema que vamos a utilizar
+
+    docker-compose up -d
+
+Template de NIFI en la carpeta NIFI
+
 TBD
 
 ## 2.2) Ejecución MVP data project
