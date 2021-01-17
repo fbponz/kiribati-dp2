@@ -19,7 +19,7 @@ services:
     container_name: jupyterPySparkDP2
     user: root
     environment:
-      - JUPYTER_TOKEN=edem
+      - JUPYTER_TOKEN=kiridp
     volumes:
       - ./config/spark-defaults.conf:/usr/local/spark-2.4.5-bin-hadoop2.7/conf/spark-defaults.conf
     ports:
