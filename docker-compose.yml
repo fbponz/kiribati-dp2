@@ -7,6 +7,8 @@ services:
     image: 'apache/nifi:latest'
     hostname: nifi
     container_name: nifiDP2
+    volumes:
+      - ./nifi/:/home/nifi/
     ports:
       - '8090:8090'
     environment:
@@ -70,3 +72,7 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+      
+networks:
+  default:
+    driver: bridge
