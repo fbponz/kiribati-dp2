@@ -4,12 +4,12 @@
 # Equipo KIRIBATI 
 * [Lluis LLoret](https://github.com/luisllll)
 * [Marco Colapietro](https://github.com/Marcolapietro)
-* [Gonzalo  Alberola](https://github.com/GonzaloAP97)
+* [Gonzalo Alberola](https://github.com/GonzaloAP97)
 * [Marta Álvarez](https://github.com/maalal)
 * [Borja Ponz](https://github.com/fbponz)
 
 # 1) kiribati-dp2
-Objetivo del proyecto ser capaces de leer los tweets de una cuenta de twitter especifica y
+Objetivo del proyecto ser capaces de leer información de una cuenta de Twitter y responder. Una vez leídos los tweets, se cruza la información obtenida y se busca el mejor match de las opciones disponibles. COn este resultado, se debe responder al tweet anterior en el menor timepo posible. 
 
 ## 1.1) Video 
 Enlace video demostrativo del MVP.
