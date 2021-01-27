@@ -72,3 +72,33 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+
+  postgres:
+    container_name: postgres
+    build: 
+      context: ./bd
+      dockerfile: Dockerfile
+    image: kiribati_db_dp1:1.0
+    environment:
+      POSTGRES_DB: kiritweet
+      POSTGRES_USER: kiriuser
+      POSTGRES_PASSWORD: kiripass
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+   
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:4.28
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-kiribati@kiritweet.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-Kiripass}
+    volumes:
+       - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+    
+volumes:
+    postgres_data:
+    pgadmin:  
