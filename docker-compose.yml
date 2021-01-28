@@ -73,32 +73,23 @@ services:
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
 
-  postgres:
-    container_name: postgres
-    build: 
-      context: ./bd
-      dockerfile: Dockerfile
-    image: kiribati_db_dp1:1.0
-    environment:
-      POSTGRES_DB: kiritweet
-      POSTGRES_USER: kiriuser
-      POSTGRES_PASSWORD: kiripass
+  elasticsearch:
+    image: 'elasticsearch:7.3.0'
+    hostname: elasticsearch
+    container_name: elasticsearchDP2
     ports:
-      - "5432:5432"
-    restart: unless-stopped
-   
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:4.28
+      - '9200:9200'
+      - '9300:9300'
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-kiribati@kiritweet.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-Kiripass}
-    volumes:
-       - pgadmin:/root/.pgadmin
+      - discovery.type=single-node
+      
+  kibana:
+    image: 'kibana:7.3.0'
+    hostname: kibana
+    container_name: kibanaDP2
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    restart: unless-stopped
-    
-volumes:
-    postgres_data:
-    pgadmin:  
+      - '5601:5601'
+    environment:
+      - elasticsearch.hosts=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
