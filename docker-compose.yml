@@ -14,19 +14,6 @@ services:
     environment:
       - NIFI_WEB_HTTP_PORT=8090
       
-  # Jupyter: Notebook Analytics
-  jupyter:
-    image: 'jupyter/pyspark-notebook:spark-2'
-    hostname: jupyterPySpark
-    container_name: jupyterPySparkDP2
-    user: root
-    environment:
-      - JUPYTER_TOKEN=kiridp
-    volumes:
-      - ./config/spark-defaults.conf:/usr/local/spark-2.4.5-bin-hadoop2.7/conf/spark-defaults.conf
-    ports:
-      - '8888:8888'
-      
   zookeeper:
     image: confluentinc/cp-zookeeper:5.4.0
     hostname: zookeeper
@@ -74,11 +61,11 @@ services:
       PORT: 9021
 
   postgres:
-    container_name: postgres
+    container_name: postgresDP2
     build: 
       context: ./bd
       dockerfile: Dockerfile
-    image: kiribati_db_dp1:1.0
+    image: kiribati_db_dp2:1.0
     environment:
       POSTGRES_DB: kiritweet
       POSTGRES_USER: kiriuser
@@ -98,7 +85,24 @@ services:
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     restart: unless-stopped
-    
+
+  clientes:
+    container_name: clientesDP2
+    build:
+      context: ./clientes
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
+
+  casas:
+    container_name: casasDP2
+    build:
+      context: ./casas
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
 volumes:
     postgres_data:
     pgadmin:  
