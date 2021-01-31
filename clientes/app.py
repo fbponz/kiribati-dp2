@@ -2,6 +2,7 @@ import tweepy
 import psycopg2
 import json
 import csv
+import re
 
 from kafka import KafkaConsumer
 
@@ -9,31 +10,18 @@ def extract(string, start='(', stop=')'):
     return string[string.index(start)+1:string.index(stop)]
 
 def city_pick (beach, city, nature, party):
-    
-    data_ciudad = {'Barcelona' : {'Beach': 4 , 'City' : 7, 'Nature' : 3, 'Party' : 5 },'Valencia': {'Beach': 5 , 'City' : 6, 'Nature' : 3, 'Party' : 5}, 'Sevilla': {'Beach': 1 , 'City' : 5, 'Nature' : 3, 'Party' : 5}, 'Bilbao': {'Beach': 3 , 'City' : 4, 'Nature' : 6, 'Party' : 5}, 'Oviedo' :{'Beach': 3 , 'City' : 2, 'Nature' : 7, 'Party' : 3}, 'Madrid': {'Beach': 0, 'City' : 7, 'Nature' : 5, 'Party' : 5}, 'Ibiza': {'Beach': 6 , 'City' : 2, 'Nature' : 4, 'Party' : 6}}
-    lista_ciudades = ["Barcelona", "Valencia", "Bilbao", "Oviedo" , "Madrid", "Ibiza"]
-    cities_scores = []
-    
-    barcelona_score = data_ciudad['Barcelona']['Beach'] * beach + data_ciudad['Barcelona']['City'] * city + data_ciudad['Barcelona']['Nature'] * nature + data_ciudad['Barcelona']['Party']
-    valencia_score = data_ciudad['Valencia']['Beach'] * beach + data_ciudad['Valencia']['City'] * city + data_ciudad['Valencia']['Nature'] * nature + data_ciudad['Valencia']['Party']
-    bilbao_score = data_ciudad['Bilbao']['Beach'] * beach + data_ciudad['Bilbao']['City'] * city + data_ciudad['Bilbao']['Nature'] * nature + data_ciudad['Bilbao']['Party']
-    oviedo_score = data_ciudad['Oviedo']['Beach'] * beach + data_ciudad['Oviedo']['City'] * city + data_ciudad['Oviedo']['Nature'] * nature + data_ciudad['Oviedo']['Party']
-    madrid_score = data_ciudad['Madrid']['Beach'] * beach + data_ciudad['Madrid']['City'] * city + data_ciudad['Madrid']['Nature'] * nature + data_ciudad['Madrid']['Party']
-    ibiza_score = data_ciudad['Ibiza']['Beach'] * beach + data_ciudad['Ibiza']['City'] * city + data_ciudad['Ibiza']['Nature'] * nature + data_ciudad['Ibiza']['Party']
-    
-    cities_scores.append(barcelona_score)
-    cities_scores.append(valencia_score)
-    cities_scores.append(bilbao_score)
-    cities_scores.append(oviedo_score)
-    cities_scores.append(madrid_score)
-    cities_scores.append(ibiza_score)
-    
-    
-    new_dict = dict(zip(lista_ciudades, cities_scores))
-    max_key = max(new_dict, key=new_dict.get)
-
-    
-    return max_key
+    data= {'Barcelona' : {'Beach': 3 , 'City' : 7, 'Nature' : 3, 'Party' : 6 },'Valencia': {'Beach': 5 , 'City' : 6, 'Nature' : 3, 'Party' : 5}, 'Sevilla': {'Beach': 1 , 'City' : 5, 'Nature' : 3, 'Party' : 5}, 'Bilbao': {'Beach': 4 , 'City' : 4, 'Nature' : 6, 'Party' : 5}, 'Oviedo' :{'Beach': 4 , 'City' : 3, 'Nature' : 7, 'Party' : 4}, 'Madrid': {'Beach': 0, 'City' : 7, 'Nature' : 5, 'Party' : 5}, 'Ibiza': {'Beach': 6 , 'City' : 2, 'Nature' : 4, 'Party' : 6}}
+    lista_city = ['Barcelona', 'Valencia', 'Bilbao', 'Oviedo', 'Madrid', 'Ibiza']    
+    ciudad_punt = lambda beach_rank, city_rank, nature_rank, party_rank, beach_sur, city_sur, nature_sur, party_sur: (beach_rank*beach_sur)+(city_rank*city_sur)+(nature_rank*nature_sur)+(party_rank*party_sur)
+    res = 0
+    res_prev = 0
+    Ciudad = 'Barcelona'
+    for act_city in lista_city:
+        res = ciudad_punt(data[act_city]['Beach'],data[act_city]['City'],data[act_city]['Nature'],data[act_city]['Party'],beach,city,nature,party)
+        if(res > res_prev):
+            res_prev=res
+            Ciudad = act_city
+    return Ciudad
 
 def selectData(dbCursor, text_query):
     sqlSelect = text_query;
@@ -77,17 +65,10 @@ if __name__ == '__main__':
         for msg in consumer:
             record = json.loads(msg.value)
             string_list = record["full_text"]
-            words = string_list.split()
-            numeric_filter = filter(str.isdigit, words[8])
-            words[8] = "".join(numeric_filter)
-            name = words[3]
-            salary = words[8]
-            num_family_members = words[19]
-            hobby1 = int(extract(words[25]))
-            hobby2 = int(extract(words[26]))
-            hobby3 = int(extract(words[27]))
-            hobby4 = int(extract(words[28]))
+            data = list(map(int, re.findall(r'\d+', string_list))) 
+            #data[0]-> Salary, data[2]-> Family members, data[3]-> Playa, data[4]-> Ciudad, data[5]-> Naturaleza, data[6]-> Party.
+            name = string_list[11:string_list.find(",")]
             
-            city_name = city_pick(hobby1,hobby2,hobby3,hobby4)
-            flat_info = selectData(dbCursor,"select * from casas WHERE city_name='{}' AND  number_rooms>={} AND (monthly_cost) <=(0.3*({}/12))ORDER BY monthly_cost DESC LIMIT 1".format(city_name,num_family_members,salary));
+            city_name = city_pick(data[3],data[4],data[5],data[6])
+            flat_info = selectData(dbCursor,"select * from casas WHERE city_name='{}' AND  number_rooms>={} AND (monthly_cost) <=(0.3*({}/12))ORDER BY monthly_cost DESC LIMIT 1".format(city_name,data[2],data[0]));
             respuesta_tweet(name,flat_info[0][4],flat_info[0][1],record["id"][0],'{}'.format(vAPIKEY),'{}'.format(vAPISECRETKEY),'{}'.format(vACCESSTOKEN),'{}'.format(vACCESSTOKENSECRET))
