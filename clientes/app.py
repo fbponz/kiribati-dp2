@@ -10,8 +10,8 @@ def extract(string, start='(', stop=')'):
     return string[string.index(start)+1:string.index(stop)]
 
 def city_pick (beach, city, nature, party):
-    data= {'Barcelona' : {'Beach': 3 , 'City' : 7, 'Nature' : 3, 'Party' : 6 },'Valencia': {'Beach': 5 , 'City' : 6, 'Nature' : 3, 'Party' : 5}, 'Sevilla': {'Beach': 1 , 'City' : 5, 'Nature' : 3, 'Party' : 5}, 'Bilbao': {'Beach': 4 , 'City' : 4, 'Nature' : 6, 'Party' : 5}, 'Oviedo' :{'Beach': 4 , 'City' : 3, 'Nature' : 7, 'Party' : 4}, 'Madrid': {'Beach': 0, 'City' : 7, 'Nature' : 5, 'Party' : 5}, 'Ibiza': {'Beach': 6 , 'City' : 2, 'Nature' : 4, 'Party' : 6}}
-    lista_city = ['Barcelona', 'Valencia', 'Bilbao', 'Oviedo', 'Madrid', 'Ibiza']    
+    data= {'Barcelona' : {'Beach': 3 , 'City' : 7, 'Nature' : 3, 'Party' : 6 },'Valencia': {'Beach': 5 , 'City' : 6, 'Nature' : 3, 'Party' : 5}, 'Sevilla': {'Beach': 1 , 'City' : 5, 'Nature' : 6, 'Party' : 6}, 'Bilbao': {'Beach': 4 , 'City' : 4, 'Nature' : 6, 'Party' : 5}, 'Oviedo' :{'Beach': 4 , 'City' : 3, 'Nature' : 7, 'Party' : 4}, 'Madrid': {'Beach': 0, 'City' : 7, 'Nature' : 5, 'Party' : 6}, 'Ibiza': {'Beach': 6 , 'City' : 2, 'Nature' : 4, 'Party' : 6}}
+    lista_city = ['Barcelona', 'Valencia', 'Sevilla', 'Bilbao', 'Oviedo', 'Madrid', 'Ibiza']    
     ciudad_punt = lambda beach_rank, city_rank, nature_rank, party_rank, beach_sur, city_sur, nature_sur, party_sur: (beach_rank*beach_sur)+(city_rank*city_sur)+(nature_rank*nature_sur)+(party_rank*party_sur)
     res = 0
     res_prev = 0
@@ -33,9 +33,10 @@ def respuesta_tweet(nombre,codigo_casa,ciudad,id_tweet_cliente,inAPIKEY,inAPISEC
     auth = tweepy.OAuthHandler(inAPIKEY,inAPISECRETKEY)
     auth.set_access_token(inACCESSTOKEN,inACCESSTOKENSCRET)
     api=tweepy.API(auth)
-    web ={'Barcelona':'https://bit.ly/2MAsRwS','Valencia':'https://bit.ly/2McyTEe','Bilbao':'https://bit.ly/2MCMlkr','Oviedo':'https://bit.ly/2L7Xx8q', 'Madrid':'https://bit.ly/39vjSWP', 'Ibiza':'https://bit.ly/3oCO5Ye'} 
-
-    api.update_status("Hola {}, tenemos esta casa para ti en {}({}), el ID de la vivienda: {} ".format(nombre,ciudad,web[ciudad],codigo_casa), in_reply_to_status_id = '{}'.format(id_tweet_cliente),auto_populate_reply_metadata=True)
+    web ={'Barcelona':'https://bit.ly/2MAsRwS','Valencia':'https://bit.ly/2McyTEe','Bilbao':'https://bit.ly/2MCMlkr','Oviedo':'https://bit.ly/2L7Xx8q', 'Madrid':'https://bit.ly/39vjSWP', 'Ibiza':'https://bit.ly/3oCO5Ye','Sevilla':'https://bit.ly/36zSapU'} 
+    img ={'Barcelona':'barcelona.jpg','Valencia':'valencia.jpg','Sevilla':'sevilla.jpg','Bilbao':'bilbao.jpg','Oviedo':'oviedo.jpg', 'Madrid':'madrid.jpg', 'Ibiza':'ibiza.jpg'}
+    media = api.media_upload(img[ciudad])
+    api.update_status("Hola {}! Disponemos de tu nueva casa en {}, El ID de la casa: {}. Para +info /DM {}".format(nombre,ciudad,codigo_casa,web[ciudad]), in_reply_to_status_id = '{}'.format(id_tweet_cliente),media_ids=[media.media_id],auto_populate_reply_metadata=True)
 
 if __name__ == '__main__':
 

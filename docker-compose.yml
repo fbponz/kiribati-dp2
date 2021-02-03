@@ -7,8 +7,6 @@ services:
     image: 'apache/nifi:latest'
     hostname: nifi
     container_name: nifiDP2
-    volumes:
-      - ./nifi/:/home/nifi/
     ports:
       - '8090:8090'
     environment:

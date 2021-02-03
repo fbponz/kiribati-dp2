@@ -10,12 +10,12 @@
 
 # 1) kiribati-dp2
 
-Objetivo del proyecto, ser capaces de leer información de una cuenta de Twitter y responder en el menor tiempo posible. Hay tres tipos de tweets:
-- Cliente -> Donde se nos indica el nombre del cliente, su edad, miembros familia, su sueldo y hobbies.
-- Casas -> Donde se indica la localización de la casa, el coste alquiler mensual y un código de la vivienda.
-- Empleos -> Lista de empleos con sueldo neto
+Objetivo del proyecto, es disponer de la capacidad de leer información de una cuenta de Twitter y responder en el menor tiempo posible. Hay tres tipos de tweets:
+- Cliente -> Donde se nos indica el nombre del cliente, su edad, miembros de la familia, sueldo y hobbies.
+- Casas -> Donde se indica la localización de la casa, el coste de alquiler mensual y un código de la vivienda.
+- Empleos -> Lista de empleos con sueldo neto.
 
-Una vez leídos los tweets, se cruza la información obtenida y se busca el mejor match de las opciones disponibles. Se responde al tweet de cliente, tan rápido como sea posible.
+Una vez leídos los tweets, se cruza la información obtenida y se busca el mejor match de las opciones disponibles. Se responde al tweet de cliente, tan rápido como sea posible. El algoritmo para hacer match está descrito en el algoritmo 2.3. 
 
 ## 1.1) Video 
 Enlace video demostrativo del MVP.
@@ -27,9 +27,9 @@ Para la resolución de la problemática planteada hemos decidido implementar la 
 <br>
 <img src="resources/ArquitecturaMVP.png"/>
 <br>
-NIFI: El objetivo principal es poder ingestar los datos a través de la API que nos proporciona Twitter. Una vez recibimos respuesta tenemos que filtrar por un lado los tweets que no nos interesan y también datos que no interesan para la ejecución de la aplicación y dividir los tweets en dos tipos Clientes y Casas. Se ha escogido Nifi por la versatilidad que nos ofrece para realizar prototipos y ajustarnos a unas necesidades cambiantes.
+NIFI: El objetivo principal es poder ingestar los datos a través de la API que nos proporciona Twitter. Una vez recibimos respuesta de la API tenemos que filtrar por un lado los tweets que no nos interesan y también datos que no interesan para la ejecución de la aplicación. También segregamos los tweets en dos tipos Clientes y Casas. Se ha escogido Nifi por la versatilidad que nos ofrece para realizar prototipos y ajustarnos a unas necesidades cambiantes.
 
-Kafka: El objetivo de gastar kafka, es que nos permite realizar una gestión de eventos en tiempo real, añade una latencia baja al sistema y nos permite comunicar las diferentes aplicaciones que componen nuestra arquitectura. En esta aplicación vamos a tener dos topics, uno de ellos incluirá los tweets de los clientes y otro tweets los datos de las casas.
+Kafka: Kafka, nos permite realizar una gestión de eventos en tiempo real, añade una latencia baja al sistema y nos permite comunicar las diferentes aplicaciones que componen nuestra arquitectura. En esta aplicación vamos a tener dos topics, uno de ellos incluirá los tweets de los clientes y otro tweets los datos de las casas.
 
 Python: Con el objetivo de probar el concepto de hacer match entre los tweets de casas y los tweets de cliente
 
@@ -54,18 +54,37 @@ Para ello hacemos doble click sobre el componente y añadimos las claves, como s
 Para acceder a nifi se recomienda gastar la siguiente dirección.
     Accesso -> http://localhost:8080
     
+Ejemplo tweet despues de filtrarlo.
+
+    {
+        "created_at" : "Tue Feb 02 21:53:06 +0000 2021",
+        "id" : [ 1356722335328395269, 1258295785260756992 ],
+        "text" : "My name is Lori Allen, my salary is 135434€ yearly and I am 47 years old. My family are 4 members. These are my hob… https://t.co/ln6TLjuoVy",
+        "name" : "dlpexerciseprocess",
+        "screen_name" : "dlpexercisepro1",
+        "full_text" : "My name is Lori Allen, my salary is 135434€ yearly and I am 47 years old. My family are 4 members. These are my hobbies: Beach(4), City(6), Nature(6), Party(10)  #mdaedem"
+    }
+Ejemplo tweet despues de filtrarlo
+
+    {
+        "created_at" : "Tue Feb 02 21:53:21 +0000 2021",
+        "id" : [ 1356722399253831681, 1258295785260756992 ],
+        "text" : "A house in Sevilla is free for renting, with 3 rooms available and a monthly cost of 1076€ with code 155692 #mdaedem",
+        "name" : "dlpexerciseprocess",
+        "screen_name" : "dlpexercisepro1"
+    }
+
 #### 2.1.1.2) Apache Kafka
 <br>
 El sistema actual, dispone de dos topics, por uno se envian los tweets de casas y por otros se envian los tweets de clientes, después de ser filtrados en Apache NIFI. En este MVP lo gastamos para interconectar la aplicación de Ingestión y la aplicación de procesado de salida.
 
-#### 2.1.1.3) Scripts.
+#### 2.1.1.3) Procesado.
 <br>
 Con el objetivo de probar el concepto de hacer match entre los tweets de casas y los tweets de cliente. Se disponen de dos scripts diferentes uno está contenido en el contenedor CasasDP2 y el otro en ClienteDP2. Si se quiere ejecutarlos basta con poner en marcha el contenedor. En caso de que no tenga creado el topic CasasTK o ClientesTK respectivamente los contenedores estarán reiniciandose constantemente.
 
 #### 2.1.1.3) Base de datos 
 
-La base de datos postgreSQL está mapeada en el puerto 5432. Durante la inicialización se crean la tablas necesaria para el correcto funcionamiento del data project 2. La siguiente tabla es la única que se implementa en este MVP.
-
+La base de datos postgreSQL está mapeada en el puerto 5432. Durante la inicialización se crean la tabla necesaria para el correcto funcionamiento del data project 2. La siguiente tabla es la única que se implementa en este MVP.
 <br>
 
 <img src="resources/Casas_Table.png"/>
@@ -74,6 +93,11 @@ La base de datos postgreSQL está mapeada en el puerto 5432. Durante la iniciali
 
     Accesso -> http://localhost:5432
 
+    docker exec -i -t postgresDP2 /bin/bash
+
+    psql -d kiritweet -U kiriuser
+
+    select * from casas; 
 
 
 ## 2.2) Ejecución MVP data project
@@ -100,9 +124,11 @@ Para el algoritmo de decisión del primer MVP se propone gastar una suma de prod
 
 Donde Rank es el valor que tenemos en una tabla y X simboliza cada una de las siguientes categorías (Beach/City/Nature/Party) Por otro lado Preference es el valor que obtenemos del tweet de cliente con la importancia que le da a cada categoría el cliente.
 
+## 2.4) Pasos ejecutar en maquina virtual.
+
 # 3) Lineas de mejora
 
-- Modificar el procesado e introducir procesado gastando flink.
+- Modificar el procesado e introducir procesado basado en flink.
 - Quitar NIFI e introducir Kafka Connect para ingestar datos desde twitter.
 - Cambiar postgreSQL por Redis.
 - Añadir Jenkins CI/CD.
