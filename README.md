@@ -116,8 +116,8 @@ La rutina de cliente dispone del siguiente flujo, En la acción "Calcular Ciudad
 
 
 Para el algoritmo de decisión del primer MVP se propone gastar una suma de productos de cada puntuación por cada una de las ciudades, actualmente disponemos de cuatro rankings por cada una de las ciudades. El algoritmo que vamos a utilizar es el siguiente:
-<br>
-        Puntuación_ciudad= Sumatorio(rank_x * Preference_x)
+
+    Puntuación_ciudad= Sumatorio(rank_x * Preference_x)
 
 <br>
 
@@ -154,14 +154,19 @@ Para acceder al panel de business Intelligence. Se debe realizar desde el navega
 Antes de poder ejecutar el MVP tenemos que realizar un paso previo. Debemos ejecutar los siguientes comandos
 
 Debemos de posicionarnos en la carpeta clientes, que se encuentra dentro de la carpeta kiribati-dp2
+
     cd {$tu_url}kiribati-dp2/clientes
+    
 Una vez estamos en la siguiente carpeta debemos hacer una copia del fichero "twitterkeys_template.csv"
+
     cp twitterkeys_template.csv twitterkeys.csv
+    
 Ahora debemos abrir dicho fichero con un editor de texto y modificar las etiquetas de la segunda linea. Por los valores obtuvimos en el apartado 2.1.1) Prerequisitos.
 
 ### 2.2.2) Lanzar el contenedor de docker
 
 Para ejecutar el sistema del MVP es necesario descargar el repositorio y mediante el uso de la terminal consola, Lanzar el siguiente comando.
+
     $ docker-compose build
 
 Una vez hemos compilado las imágenes de nuestro dataproject vamos a ejecutar el siguiente comando para poner el DP en marcha.
