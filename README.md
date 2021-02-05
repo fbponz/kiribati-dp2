@@ -140,7 +140,12 @@ La base de datos está configurada en el puerto 5432, en este MVP hemos prescind
     
     # select * from casas; 
 (Una vez estamos loggeados en la base de datos, ya podemos realizar consultas mediante SQL).
+#### 2.1.2.4) METABASE 
 
+Para acceder al panel de business Intelligence. Se debe realizar desde el navegador en la siguiente dirección http://localhost:3000 haciendo uso de las siguientes credenciales:
+<br>
+
+<img src="resources/Metabase.png"/>
 
 ## 2.2) Ejecución MVP data project en local
 
