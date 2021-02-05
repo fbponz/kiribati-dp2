@@ -106,9 +106,11 @@ El sistema actual, dispone de dos topics, por uno se envían los tweets de casas
 Con el objetivo de probar el concepto de hacer match entre los tweets de casas y los tweets de cliente. Se disponen de dos scripts diferentes uno está contenido en el contenedor CasasDP2 y el otro en ClienteDP2. Si se quiere ejecutarlos basta con poner en marcha el contenedor. En caso de que no tenga creado el topic CasasTK o ClientesTK respectivamente los contenedores estarán reiniciandose constantemente hasta que el topic haya sido creado.
 
 En la rutina Casa tenemos implementado el siguiente flujo de programa, la ultima acción "Insertarlo en la tabla casas de postgreSQL" nos referimos a la tabla descrita en el apartado 2.1.2.3).
+
 <img src="resources/Rutina_Casas.png"/>
 
 La rutina de cliente dispone del siguiente flujo, En la acción "Calcular Ciudad en base a los hobbies" se implementa el algoritmo descrito en el apartado 2.1.2.3.1. Una vez disponemos del nombre de la ciudad realizamos una query sobre la base de datos de postgreSQL con los siguientes parámetros, nombre_ciudad = calculada por el algoritmo, el numero de habitaciones tiene que ser igual o mayor al numero de familiares y la renta debe estar por encima del 30%.
+
 <img src="resources/Rutina_Cliente.png"/>
 
 
