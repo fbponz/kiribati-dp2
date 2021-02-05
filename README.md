@@ -125,7 +125,7 @@ Para el algoritmo de decisión del primer MVP se propone gastar una suma de prod
 
 Donde Rank es el valor que tenemos en una tabla y X simboliza cada una de las siguientes categorías (Beach/City/Nature/Party) Por otro lado Preference es el valor que obtenemos del tweet de cliente con la importancia que le da a cada categoría el cliente.
 
-#### 2.1.2.3) Base de datos 
+#### 2.1.2.4) Base de datos 
 
 La base de datos postgreSQL está mapeada en el puerto 5432. Durante la inicialización se crean la tabla necesaria para el correcto funcionamiento del data project 2. La siguiente tabla es la única que se implementa en este MVP.
 <br>
@@ -142,7 +142,7 @@ La base de datos está configurada en el puerto 5432, en este MVP hemos prescind
     
     # select * from casas; 
 (Una vez estamos loggeados en la base de datos, ya podemos realizar consultas mediante SQL).
-#### 2.1.2.4) METABASE 
+#### 2.1.2.5) METABASE 
 
 Para acceder al panel de business Intelligence. Se debe realizar desde el navegador en la siguiente dirección http://localhost:3000 haciendo uso de las siguientes credenciales:
 <br>
