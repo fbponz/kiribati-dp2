@@ -1,4 +1,5 @@
-# kiribati-dp2
+# kiribati Data Project 2
+### Master en Data Analytics para la Empresa
 <img align="center" width="270" height="136" src="http://www.gepacv.org/wp-content/uploads/2017/01/EDEM-Logo--540x272.png">
 
 # Equipo KIRIBATI 
