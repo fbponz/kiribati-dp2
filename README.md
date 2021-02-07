@@ -1,15 +1,16 @@
-# kiribati Data Project 2
-### Master en Data Analytics para la Empresa
+## Equipo KIRIBATI 
+
 <img align="center" width="270" height="136" src="http://www.gepacv.org/wp-content/uploads/2017/01/EDEM-Logo--540x272.png">
 
-# Equipo KIRIBATI 
+### Master en Data Analytics para la Empresa
+
+#### Data project 2.
+
 * [Lluis LLoret](https://github.com/luisllll)
 * [Marco Colapietro](https://github.com/Marcolapietro)
-* [Gonzalo Alberola](https://github.com/GonzaloAP97)
+* [Gonzalo  Alberola](https://github.com/GonzaloAP97)
 * [Marta Álvarez](https://github.com/maalal)
 * [Borja Ponz](https://github.com/fbponz)
-
-# 1) kiribati-dp2
 
 Objetivo del proyecto, es disponer de la capacidad de leer información de una cuenta de Twitter y responder en el menor tiempo posible. Hay tres tipos de tweets:
 - Cliente -> Donde se nos indica el nombre del cliente, su edad, miembros de la familia, sueldo y hobbies.
@@ -18,12 +19,12 @@ Objetivo del proyecto, es disponer de la capacidad de leer información de una c
 
 Una vez leídos los tweets, se cruza la información obtenida y se busca el mejor match de las opciones disponibles. Se responde al tweet de cliente, tan rápido como sea posible. El algoritmo para hacer match está descrito en el algoritmo 2.3. 
 
-## 1.1) Video 
+##### 1.1) Video 
 Enlace video demostrativo del MVP [Youtube](https://www.youtube.com/watch?v=WqeDbgOq7YE) 
 <br>
 
-# 2) MVP
-## 2.1) Arquitectura 
+#### 2) MVP
+##### 2.1) Arquitectura 
 Para la resolución de la problemática planteada hemos decidido implementar la siguiente arquitectura.
 <br>
 <img src="resources/ArquitecturaMVP.jpeg"/>
@@ -37,7 +38,7 @@ Python: Con el objetivo de probar el concepto de hacer match entre los tweets de
 PostgreSQL: Para persistir los datos importantes de los pisos disponibles en nuestra aplicación.
 Docker: Es la base sobre la que se sustenta el poder desplegar nuestra solución.
 
-### 2.1.1) Prerequesitos
+##### 2.1.1) Prerequesitos
 
 Para poner el siguiente MVP en funcionamiento tenemos que disponer de unas claves para acceder a la API de twitter, para ello vamos a la siguiente pagina.
 
@@ -49,12 +50,12 @@ Una vez disponemos de claves disponemos de las siguientes claves:
 * Access token.
 * Access token secret.
 
-### 2.1.2) Configuración
+#### 2.1.2) Configuración
 <br>
 En el siguiente apartado vamos a detallar las configuraciones necesarias para el correcto funcionamiento del data project.
 <br>
 
-#### 2.1.2.1) Apache NIFI 
+##### 2.1.2.1) Apache NIFI 
 <br>
 Para la ingestión de los datos se ha utilizado Apache NIFI. En la carpeta NIFI se encuentra el template desarrollado. Cuando se añade el template antes de ponerlo en ejecución hay que añadirle las claves que hemos obtenido en el apartado 2.1.1) Prerequisitos.
 
@@ -98,11 +99,11 @@ Ejemplo tweet de casa después de filtrarlo.
         "screen_name" : "dlpexercisepro1"
     }
 
-#### 2.1.2.2) Apache Kafka
+##### 2.1.2.2) Apache Kafka
 <br>
 El sistema actual, dispone de dos topics, por uno se envían los tweets de casas casasTK y por otro se envían los tweets de clientes clientesTK. Como ya se conoce para funcionar Kafka debemos disponer también de Zookeeper en nuestro Setup.
 
-#### 2.1.2.3) Procesado.
+##### 2.1.2.3) Procesado.
 <br>
 Con el objetivo de probar el concepto de hacer match entre los tweets de casas y los tweets de cliente. Se disponen de dos scripts diferentes uno está contenido en el contenedor CasasDP2 y el otro en ClienteDP2. Si se quiere ejecutarlos basta con poner en marcha el contenedor. En caso de que no tenga creado el topic CasasTK o ClientesTK respectivamente los contenedores estarán reiniciandose constantemente hasta que el topic haya sido creado.
 
@@ -150,9 +151,9 @@ Para acceder al panel de business Intelligence. Se debe realizar desde el navega
 
 <img src="resources/Metabase.png"/>
 
-## 2.2) Ejecución MVP data project en local
+#### 2.2) Ejecución MVP data project en local
 
-### 2.2.1) Preparación ejecutar
+##### 2.2.1) Preparación ejecutar
 
 Antes de poder ejecutar el MVP tenemos que realizar un paso previo. Debemos ejecutar los siguientes comandos
 
@@ -166,7 +167,7 @@ Una vez estamos en la siguiente carpeta debemos hacer una copia del fichero "twi
     
 Ahora debemos abrir dicho fichero con un editor de texto y modificar las etiquetas de la segunda linea. Por los valores obtuvimos en el apartado 2.1.1) Prerequisitos.
 
-### 2.2.2) Lanzar el contenedor de docker
+##### 2.2.2) Lanzar el contenedor de docker
 
 Para ejecutar el sistema del MVP es necesario descargar el repositorio y mediante el uso de la terminal consola, Lanzar el siguiente comando.
 
@@ -184,7 +185,7 @@ Después de cada pull ejecutaremos el siguiente comando antes de poner el conten
 
     $ docker-compose build
 
-## 2.3) Pasos ejecutar en maquina virtual.
+#### 2.3) Pasos ejecutar en maquina virtual.
 
 Antes de crear la maquina virtual debemos crear la configuración que vamos a necesitar aplicar en la maquina virutal. Para ello nos dirigimos a la dirección https://console.cloud.google.com, Aquí navegamos hasta VPC Network -> Firewall.
 Una vez en este punto debemos crear una regla del firewall Debemos seleccionar que la dirección del trafico es al ingresar, en Target Tags especificamos con que nombre queremos utilizar dicha regla. y especificamos por un lado los rangos de IPs en nuestro caso 0.0.0.0/0 y por otro los puertos que vamos a utilizar en nuestro caso 8090 puesto que Nifi es el único que vamos a gastar desde el exterior. 
@@ -221,7 +222,7 @@ Con el repositorio kiribati-dp2 descargado ya en la maquina virtual lo siguiente
 
 Si has llegado hasta aquí, gracias por leer nuestra información del data project.
 
-# 3) Lineas de mejora
+#### 3) Lineas de mejora
 
 - Modificar el procesado basado en python por flink.
 - Quitar NIFI e introducir Kafka Connect para ingestar datos desde twitter.
@@ -230,4 +231,4 @@ Si has llegado hasta aquí, gracias por leer nuestra información del data proje
 - Añadir Kubernetes.
 - Añadir ElasticSearch y kibana.
 
-# Kiribati Team
+## Kiribati Team
